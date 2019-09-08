@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/widgets.dart';
 
+
 /// a base class for any stateful widget for checking internet connectivity
 abstract class BaseState<T extends StatefulWidget> extends State {
   final Connectivity _connectivity = Connectivity();
@@ -31,9 +32,13 @@ abstract class BaseState<T extends StatefulWidget> extends State {
       return;
     }
 
-    await _updateConnectionStatus().then((bool isConnected) => setState(() {
-      isOnline = isConnected;
-    }));
+    await _updateConnectionStatus().then((bool isConnected){
+      if(mounted){
+        setState(() {
+          isOnline = isConnected;
+        });
+      }
+    });
   }
 
   @override
@@ -43,9 +48,13 @@ abstract class BaseState<T extends StatefulWidget> extends State {
     _connectivitySubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
-      await _updateConnectionStatus().then((bool isConnected) => setState(() {
-        isOnline = isConnected;
-      }));
+      await _updateConnectionStatus().then((bool isConnected){
+        if(mounted){
+          setState(() {
+            isOnline = isConnected;
+          });
+        }
+      });
     });
   }
 
